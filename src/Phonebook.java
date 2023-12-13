@@ -3,14 +3,11 @@ import java.util.Scanner;
 
 public class Phonebook {
     public static void main(String[] args) {
-
         System.out.println("Phonebook Application Started");
 
         ArrayList<String> names = new ArrayList<>();
         ArrayList<String> numbers = new ArrayList<>();
-
         Scanner scanner = new Scanner(System.in);
-
         String selectedOption = "0";
 
         while (!selectedOption.equals("3")) {
