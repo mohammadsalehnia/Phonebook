@@ -30,8 +30,8 @@ public class Phonebook {
                     String newNumber = scanner.nextLine();
                     numbers.add(newNumber);
                     System.out.println("New number successfully added to Phonebook");
+                    break;
                 }
-                break;
                 case "2": {
                     System.out.println("----------------- PhoneBook List -------------");
                     for (int i = 0; i < numbers.size(); i++) {
