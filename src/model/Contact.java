@@ -1,14 +1,28 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
 public abstract class Contact {
+    private static int nextId = 1;
+    private int id;
     private String name;
-    private String number;
+    protected Map<Integer, PhoneNumber> phoneNumbers = new HashMap<>();
+
     private final ContactType type;
 
-    public Contact(String name, String number, ContactType type) {
+    public abstract void update(Scanner scanner);
+
+    public Contact(String name, ContactType type) {
+        this.id = nextId++;
         this.setName(name);
-        this.setNumber(number);
         this.type = type;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public ContactType getType() {
@@ -30,20 +44,7 @@ public abstract class Contact {
         this.name = capitalizeFirstCharacter(name);
     }
 
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    @Override
-    public String toString() {
-        return "Contact{" +
-                "name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                ", type=" + type +
-                '}';
+    public Map<Integer, PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
     }
 }
