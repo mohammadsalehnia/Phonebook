@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class PhoneBook {
-//    private ArrayList<Contact> contacts = new ArrayList<>();
-
     private Map<Integer, Contact> contacts = new HashMap<>();
     private int nextId = 1;
 
@@ -117,8 +115,6 @@ public class PhoneBook {
                 }
 
             }
-//            contacts.add(personalContact);
-
             int contactId = nextId++;
             contacts.put(contactId, personalContact);
         } else {
@@ -145,8 +141,6 @@ public class PhoneBook {
                 }
 
             }
-
-//            contacts.add(businessContact);
             int contactId = nextId++;
             contacts.put(contactId, businessContact);
 
