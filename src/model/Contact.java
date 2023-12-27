@@ -9,8 +9,7 @@ public abstract class Contact {
     private static int nextId = 1;
     private int id;
     private String name;
-    protected Map<Integer, PhoneNumber> phoneNumbers = new HashMap<>();
-
+    protected ArrayList<PhoneNumber> phoneNumbers = new ArrayList<>();
     private final ContactType type;
 
     public abstract void update(Scanner scanner);
@@ -44,7 +43,7 @@ public abstract class Contact {
         this.name = capitalizeFirstCharacter(name);
     }
 
-    public Map<Integer, PhoneNumber> getPhoneNumbers() {
+    public ArrayList<PhoneNumber> getPhoneNumbers() {
         return phoneNumbers;
     }
 }

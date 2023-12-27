@@ -50,15 +50,16 @@ public class BusinessContact extends Contact {
         String inputPhoneNumber = scanner.nextLine();
         PhoneNumber phoneNumber = new PhoneNumber(inputPhoneNumber, type);
 
-        this.phoneNumbers.put(phoneNumber.getId(), phoneNumber);
+        this.phoneNumbers.add(phoneNumber);
+
     }
 
     @Override
     public String toString() {
         return "BusinessContact{" +
                 "id='" + this.getId() + '\'' +
-                "name='" + this.getName() + '\'' +
-                "jobTitle='" + getJobTitle() + '\'' +
+                ", name='" + this.getName() + '\'' +
+                ", jobTitle='" + getJobTitle() + '\'' +
                 ", phoneNumbers= \n" + phoneNumbers +
                 '}';
     }
@@ -109,8 +110,16 @@ public class BusinessContact extends Contact {
         System.out.print("Enter the ID of the number you want to edit: ");
         int phoneNumberIdToEdit = scanner.nextInt();
         scanner.nextLine();
-        PhoneNumber existingPhoneNumber = phoneNumbers.get(phoneNumberIdToEdit);
-        if (existingPhoneNumber != null) {
+
+        PhoneNumber phoneNumberToEdit = phoneNumbers.stream()
+                .filter(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)
+                .findFirst()
+                .orElse(null);
+
+        System.out.println(phoneNumberIdToEdit);
+
+
+        if (phoneNumberToEdit != null) {
 
             System.out.println("Update number options: ");
             System.out.println("1. Edit number value");
@@ -120,11 +129,10 @@ public class BusinessContact extends Contact {
 
             switch (updateNumberOption) {
                 case "1":
-                    existingPhoneNumber.update(scanner);
+                    phoneNumberToEdit.update(scanner);
                     break;
                 case "2":
-                    PhoneNumber removedPhoneNumber = phoneNumbers.remove(phoneNumberIdToEdit);
-                    if (removedPhoneNumber != null) {
+                    if (phoneNumbers.removeIf(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)) {
                         System.out.println("Number with ID " + phoneNumberIdToEdit + " deleted successfully.");
                     } else {
                         System.out.println("Number with ID " + phoneNumberIdToEdit + " not found.");

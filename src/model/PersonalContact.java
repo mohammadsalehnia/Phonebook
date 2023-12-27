@@ -48,7 +48,8 @@ public class PersonalContact extends Contact {
         System.out.print("Enter phone number: ");
         String inputPhoneNumber = scanner.nextLine();
         PhoneNumber phoneNumber = new PhoneNumber(inputPhoneNumber, type);
-        this.getPhoneNumbers().put(phoneNumber.getId(), phoneNumber);
+//        this.getPhoneNumbers().put(phoneNumber.getId(), phoneNumber);
+        this.getPhoneNumbers().add(phoneNumber);
 
         System.out.println(type + " number added successfully");
     }
@@ -57,8 +58,8 @@ public class PersonalContact extends Contact {
     public String toString() {
         return "PersonalContact{" +
                 "id='" + this.getId() + '\'' +
-                "name='" + this.getName() + '\'' +
-                "lastName='" + this.getLastName() + '\'' +
+                ", name='" + this.getName() + '\'' +
+                ", lastName='" + this.getLastName() + '\'' +
                 ", phoneNumbers=\n" + phoneNumbers.toString() +
                 '}';
     }
@@ -99,7 +100,7 @@ public class PersonalContact extends Contact {
             }
         }
 
-        System.out.println("Contact with ID " + this + " edited successfully.");
+        System.out.println("Contact with ID " + this.getId() + " edited successfully.");
     }
 
     private void editPhoneNumber(Scanner scanner) {
@@ -110,8 +111,18 @@ public class PersonalContact extends Contact {
         System.out.print("Enter the ID of the number you want to edit: ");
         int phoneNumberIdToEdit = scanner.nextInt();
         scanner.nextLine();
-        PhoneNumber existingPhoneNumber = phoneNumbers.get(phoneNumberIdToEdit);
-        if (existingPhoneNumber != null) {
+
+
+        PhoneNumber phoneNumberToEdit = phoneNumbers.stream()
+                .filter(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)
+                .findFirst()
+                .orElse(null);
+
+        System.out.println(phoneNumberIdToEdit);
+
+
+
+        if (phoneNumberToEdit != null) {
 
             System.out.println("Update number options: ");
             System.out.println("1. Edit number value");
@@ -121,13 +132,10 @@ public class PersonalContact extends Contact {
 
             switch (updateNumberOption) {
                 case "1":
-                    existingPhoneNumber.update(scanner);
+                    phoneNumberToEdit.update(scanner);
                     break;
                 case "2":
-
-                    PhoneNumber removedPhoneNumber = phoneNumbers.remove(phoneNumberIdToEdit);
-
-                    if (removedPhoneNumber != null) {
+                    if (phoneNumbers.removeIf(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)) {
                         System.out.println("Number with ID " + phoneNumberIdToEdit + " deleted successfully.");
                     } else {
                         System.out.println("Number with ID " + phoneNumberIdToEdit + " not found.");

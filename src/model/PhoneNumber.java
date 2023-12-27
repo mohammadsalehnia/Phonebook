@@ -42,7 +42,7 @@ public class PhoneNumber {
     public String toString() {
         return "PhoneNumber{" +
                 "id='" + this.getId() + '\'' +
-                "number='" + number + '\'' +
+                ", number='" + number + '\'' +
                 ", type=" + type +
                 '}';
     }
