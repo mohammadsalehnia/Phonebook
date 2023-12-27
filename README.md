@@ -6,7 +6,7 @@ This is a simple **"Phonebook"** done with **Java** programming language.
 To compile the "Phonebook" program, type the following in the **src** directory:
 
 ```console
-javac Phonebook.java
+javac ApplicationRunner.java
 ```
 
 ## Excute the program
@@ -14,7 +14,7 @@ javac Phonebook.java
 To execute the program, type this in the **src** directory:
 
 ```console
-java Phonebook
+java ApplicationRunner
 ```
 
 

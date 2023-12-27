@@ -32,3 +32,4 @@ bin/
 Phonebook.iml
 Phonebook.class
 src/META-INF/
+*.class
