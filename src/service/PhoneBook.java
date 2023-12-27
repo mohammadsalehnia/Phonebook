@@ -8,7 +8,6 @@ public class PhoneBook implements AutoCloseable {
 
     Scanner scanner = new Scanner(System.in);
     private ArrayList<Contact> contacts = new ArrayList<>();
-    private int nextId = 1;
 
     public void run() {
 
