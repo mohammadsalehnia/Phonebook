@@ -1,9 +1,9 @@
 package model;
 
-import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PhoneNumber {
-    private static int nextId = 1;
+    private static final AtomicInteger nextId = new AtomicInteger(1);
     private int id;
 
     private String number;
@@ -14,7 +14,7 @@ public class PhoneNumber {
     }
 
     public PhoneNumber(String number, PhoneNumberType type) {
-        this.id = nextId++;
+        this.id = nextId.getAndIncrement();
         this.setNumber(number);
         this.type = type;
     }
@@ -29,13 +29,6 @@ public class PhoneNumber {
 
     public PhoneNumberType getType() {
         return type;
-    }
-
-    public void update(Scanner scanner) {
-        System.out.print("Enter new number: ");
-        String newNumber = scanner.nextLine();
-        this.setNumber(newNumber);
-        System.out.println("Number updated");
     }
 
     @Override

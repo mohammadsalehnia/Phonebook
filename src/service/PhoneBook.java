@@ -3,7 +3,6 @@ package service;
 import model.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PhoneBook implements AutoCloseable {
 
@@ -75,7 +74,6 @@ public class PhoneBook implements AutoCloseable {
             System.out.println("Phonebook is empty!");
         } else {
             System.out.println("----------------- PhoneBook List -------------");
-//            for (Contact contact : contacts.values()) {
             for (Contact contact : contacts) {
                 System.out.println(contact.toString());
                 System.out.println("-------------------------------------------");
@@ -92,60 +90,53 @@ public class PhoneBook implements AutoCloseable {
         int selectedOption = scanner.nextInt();
         scanner.nextLine();
         if (selectedOption == 1) {
-
-            String name = getUserInput("Enter Name: ");
-            String lastName = getUserInput("Enter Last Name: ");
-
-            PersonalContact personalContact = new PersonalContact(name);
-            personalContact.setLastName(lastName);
-
-            boolean enterNumber = true;
-
-            while (enterNumber) {
-
-                personalContact.addPhoneNumber(scanner);
-
-                System.out.print("Do you want add more number? (enter y for yes and other wor no): ");
-                String addMore = scanner.nextLine();
-
-
-                if (!addMore.equals("y")) {
-                    enterNumber = false;
-                }
-
-            }
-            int contactId = nextId++;
-//            contacts.put(contactId, personalContact);
-            contacts.add(personalContact);
+            addPersonaContact();
         } else {
-
-            String name = getUserInput("Enter Name: ");
-            String jobTitle = getUserInput("Enter Job Title: ");
-
-            BusinessContact businessContact = new BusinessContact(name);
-            businessContact.setJobTitle(jobTitle);
-
-            boolean enterNumber = true;
-
-            while (enterNumber) {
-
-                businessContact.addPhoneNumber(scanner);
-
-                System.out.print("Do you want add more number? (enter y for yes and other wor no): ");
-                String addMore = scanner.nextLine();
-
-                if (!addMore.equals("y")) {
-                    enterNumber = false;
-                }
-
-            }
-            int contactId = nextId++;
-//            contacts.put(contactId, businessContact);
-            contacts.add(businessContact);
-
+            addBusinessContact();
         }
 
         System.out.println("New contact successfully added to Phonebook");
+    }
+
+    private void addBusinessContact() {
+        String name = getUserInput("Enter Name: ");
+        String jobTitle = getUserInput("Enter Job Title: ");
+
+        BusinessContact businessContact = new BusinessContact(name);
+        businessContact.setJobTitle(jobTitle);
+
+        boolean enterNumber = true;
+
+        while (enterNumber) {
+
+            addPhoneNumberTo(businessContact);
+
+            System.out.print("Do you want add more number? (enter y for yes and other wor no): ");
+            String addMore = scanner.nextLine();
+
+            if (!addMore.equals("y")) {
+                enterNumber = false;
+            }
+
+        }
+        contacts.add(businessContact);
+    }
+
+    private void addPersonaContact() {
+        String name = getUserInput("Enter Name: ");
+        String lastName = getUserInput("Enter Last Name: ");
+        PersonalContact personalContact = new PersonalContact(name);
+        personalContact.setLastName(lastName);
+        boolean enterNumber = true;
+        while (enterNumber) {
+            addPhoneNumberTo(personalContact);
+            System.out.print("Do you want add more number? (enter y for yes and other wor no): ");
+            String addMore = scanner.nextLine();
+            if (!addMore.equals("y")) {
+                enterNumber = false;
+            }
+        }
+        contacts.add(personalContact);
     }
 
     private String getUserInput(String message) {
@@ -175,9 +166,83 @@ public class PhoneBook implements AutoCloseable {
                 .findFirst()
                 .orElse(null);
 
-        System.out.println(contactToEdit);
+        if (contactToEdit instanceof PersonalContact) {
+            editPersonalContact((PersonalContact) contactToEdit);
+        } else {
+            editBusinessContact((BusinessContact) contactToEdit);
+        }
+    }
 
-        contactToEdit.update(scanner);
+    private void editBusinessContact(BusinessContact businessContact) {
+        System.out.println("It's a BUSINESS contact");
+        System.out.println("What do you want to edit?");
+        System.out.println("1. Name");
+        System.out.println("2. Job Title");
+        System.out.println("3. Numbers");
+        System.out.print("Select a menu item: ");
+        String selectedOption = scanner.nextLine();
+
+
+        switch (selectedOption) {
+            case "1": {
+                System.out.print("Enter new Name: ");
+                businessContact.setName(scanner.nextLine());
+                System.out.println("Name updated");
+                break;
+            }
+            case "2": {
+                System.out.print("Enter new Job Title: ");
+                businessContact.setJobTitle(scanner.nextLine());
+                System.out.println("Job Title updated");
+                break;
+            }
+            case "3": {
+                editPhoneNumber(businessContact);
+                break;
+            }
+            default: {
+                System.out.println("Invalid Item!");
+                break;
+            }
+        }
+
+        System.out.println("Contact with ID " + businessContact.getId() + " edited successfully.");
+    }
+
+    private void editPersonalContact(PersonalContact personalContact) {
+        System.out.println("It's a PERSONAL contact");
+        System.out.println("What do you want to edit?");
+        System.out.println("1. Name");
+        System.out.println("2. Last Name");
+        System.out.println("3. Numbers");
+        System.out.print("Select a menu item: ");
+        String selectedOption = scanner.nextLine();
+
+
+        switch (selectedOption) {
+            case "1": {
+                System.out.print("Enter new Name: ");
+                personalContact.setName(scanner.nextLine());
+                System.out.println("Name updated");
+                break;
+            }
+            case "2": {
+                System.out.print("Enter new Last Name: ");
+                personalContact.setLastName(scanner.nextLine());
+                System.out.println("Last Name updated");
+                break;
+            }
+            case "3": {
+                editPhoneNumber(personalContact);
+                break;
+            }
+            default: {
+                System.out.println("Invalid Item!");
+                break;
+            }
+        }
+
+        System.out.println("Contact with ID " + personalContact.getId() + " edited successfully.");
     }
 
     private void searchContact() {
@@ -230,8 +295,6 @@ public class PhoneBook implements AutoCloseable {
     private void searchByNumber() {
         System.out.print("Enter Phone Number to search: ");
         String searchNumber = scanner.nextLine().trim();
-
-//        for (Contact contact : contacts.values()) {
         for (Contact contact : contacts) {
             for (PhoneNumber phoneNumber : contact.getPhoneNumbers()) {
                 if (phoneNumber.getNumber().equals(searchNumber)) {
@@ -257,17 +320,140 @@ public class PhoneBook implements AutoCloseable {
         System.out.print("Enter ID to search: ");
         int searchId = scanner.nextInt();
         scanner.nextLine();
-
-
         contacts.stream()
                 .filter(contact -> contact.getId() == searchId)
                 .forEach(System.out::println);
     }
 
+    private void addPhoneNumberTo(Contact contact) {
+
+        if (contact instanceof PersonalContact) {
+            String phoneNumberType;
+            System.out.println("Phone Number types:");
+            System.out.println("1. HOME");
+            System.out.println("2. WORK");
+            System.out.println("3. MOBILE");
+            System.out.print("Select Phone Number Type: ");
+
+            phoneNumberType = scanner.nextLine();
+            System.out.println("select: " + phoneNumberType);
+
+            PhoneNumberType type;
+            switch (phoneNumberType) {
+                case "1":
+                    type = PhoneNumberType.HOME;
+                    break;
+                case "2":
+                    type = PhoneNumberType.WORK;
+                    break;
+                case "3":
+                    type = PhoneNumberType.MOBILE;
+                    break;
+                default:
+                    System.out.println("Invalid Item!");
+                    return;
+            }
+
+            System.out.print("Enter phone number: ");
+            String inputPhoneNumber = scanner.nextLine();
+            PhoneNumber phoneNumber = new PhoneNumber(inputPhoneNumber, type);
+            contact.getPhoneNumbers().add(phoneNumber);
+
+        } else {
+
+            String phoneNumberType;
+            System.out.println("Phone Number types:");
+            System.out.println("1. WORK");
+            System.out.println("2. MOBILE");
+            System.out.println("3. FAX");
+            System.out.print("Select Phone Number Type: ");
+
+            phoneNumberType = scanner.nextLine();
+            System.out.println("select: " + phoneNumberType);
+
+            PhoneNumberType type;
+            switch (phoneNumberType) {
+                case "1":
+                    type = PhoneNumberType.WORK;
+                    break;
+                case "2":
+                    type = PhoneNumberType.MOBILE;
+                    break;
+                case "3":
+                    type = PhoneNumberType.FAX;
+                    break;
+                default:
+                    System.out.println("Invalid Item!");
+                    return;
+            }
+
+            System.out.print("Enter phone number: ");
+            String inputPhoneNumber = scanner.nextLine();
+            PhoneNumber phoneNumber = new PhoneNumber(inputPhoneNumber, type);
+
+            contact.getPhoneNumbers().add(phoneNumber);
+        }
+
+        System.out.println("Phone Number added successfully");
+    }
+
+    private void editPhoneNumber(Contact contact) {
+        System.out.println("List of this contact numbers: ");
+        System.out.println(contact.getPhoneNumbers());
+        System.out.println("End of numbers list");
+
+        System.out.print("Enter the ID of the number you want to edit: ");
+        int phoneNumberIdToEdit = scanner.nextInt();
+        scanner.nextLine();
+
+        PhoneNumber phoneNumberToEdit = contact.getPhoneNumbers().stream()
+                .filter(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)
+                .findFirst()
+                .orElse(null);
+
+        System.out.println(phoneNumberIdToEdit);
+
+
+        if (phoneNumberToEdit != null) {
+
+            System.out.println("Update number options: ");
+            System.out.println("1. Edit number value");
+            System.out.println("2. Delete number");
+            System.out.print("Enter update option: ");
+            String updateNumberOption = scanner.nextLine();
+
+            switch (updateNumberOption) {
+                case "1":
+                    updatePhoneNumber(phoneNumberToEdit);
+                    break;
+                case "2":
+                    if (contact.getPhoneNumbers().removeIf(phoneNumber -> phoneNumber.getId() == phoneNumberIdToEdit)) {
+                        System.out.println("Number with ID " + phoneNumberIdToEdit + " deleted successfully.");
+                    } else {
+                        System.out.println("Number with ID " + phoneNumberIdToEdit + " not found.");
+                    }
+                    break;
+                default:
+                    System.out.println("Invalid Item!");
+                    return;
+            }
+        } else {
+            System.out.println("Number with ID " + phoneNumberIdToEdit + " not found.");
+        }
+    }
+
+
+    private void updatePhoneNumber(PhoneNumber phoneNumber) {
+        System.out.print("Enter new number: ");
+        String newNumber = scanner.nextLine();
+        phoneNumber.setNumber(newNumber);
+        System.out.println("Number updated");
+    }
+
+
     @Override
     public void close() {
         scanner.close();
         System.out.println("Close");
-
     }
 }

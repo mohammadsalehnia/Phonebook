@@ -1,21 +1,17 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Contact {
-    private static int nextId = 1;
+    private static final AtomicInteger nextId = new AtomicInteger(1);
     private int id;
     private String name;
     protected ArrayList<PhoneNumber> phoneNumbers = new ArrayList<>();
     private final ContactType type;
 
-    public abstract void update(Scanner scanner);
-
     public Contact(String name, ContactType type) {
-        this.id = nextId++;
+        this.id = nextId.getAndIncrement();
         this.setName(name);
         this.type = type;
     }
