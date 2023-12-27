@@ -28,7 +28,7 @@ Phonebook Application Started
 3. Search contact
 4. Edit contact
 5. Delete contact
-6. Exit
+0. Exit
 ---------------------
 Select a menu item:
 ```
